@@ -5,39 +5,38 @@ import { Grid } from '@mui/material';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const PizzaReportType = ({data}) => {
+function random_rgba() {
+    var o = Math.round, r = Math.random, s = 255;
+    return 'rgba(' + o(r() * s) + ',' + o(r() * s) + ',' + o(r() * s) + ',' + r().toFixed(1) + ')';
+}
 
-    const data1 = {
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-        datasets: [
-            {
-                label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)',
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)',
-                ],
-                borderWidth: 1,
-            },
-        ],
+  
+const PizzaReportType = ({content}) => {
+
+    const total = content.reduce((a, c) => (a + c.profits.reduce((a, c) => (a + c.receitaLiquida), 0)), 0)
+
+    function getData(){
+        let dataset = [{
+            label: "",
+            data: content.map(item => parseFloat(item.profits.reduce((a, c) => (a + c.receitaLiquida), 0)*100/total).toFixed(2) ),
+            borderColor: content.map(()=>random_rgba()),
+            backgroundColor:  content.map(()=>random_rgba()),
+            borderWidth: 1,
+        }];
+        return dataset;
+      }
+
+    const data = {
+        labels: content.map(item => item.consultant),
+        datasets: getData(),
     };
+
+    console.log(getData())
 
     return (
         <Grid container justifyContent={'center'}>
             <Grid item xs={6}>
-                <Pie data={data1} />
+                <Pie data={data} />
             </Grid>
         </Grid>
 

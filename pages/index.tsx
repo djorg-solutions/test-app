@@ -108,7 +108,7 @@ const Home = ({ consultants }: HomePageProps) => {
       </Grid>
 
       <Grid item xs={12} mt={4}>
-        <ReportContent selected={reportTypeSelected} data={reportData}/>
+       {reportData && <ReportContent selected={reportTypeSelected} data={reportData}/>} 
       </Grid>
     </Grid>
   );

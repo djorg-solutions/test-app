@@ -5,17 +5,26 @@ import {
     CategoryScale,
     LinearScale,
     BarElement,
+    PointElement,
+    LineElement,
     Title,
     Tooltip,
     Legend,
   } from 'chart.js';
 
-const GraficoReportType = ({data}) => {
+function random_rgba() {
+  var o = Math.round, r = Math.random, s = 255;
+  return 'rgba(' + o(r() * s) + ',' + o(r() * s) + ',' + o(r() * s) + ',' + r().toFixed(1) + ')';
+}
+
+const GraficoReportType = ({content}) => {
     
     ChartJS.register(
         CategoryScale,
         LinearScale,
         BarElement,
+        PointElement,
+        LineElement,
         Title,
         Tooltip,
         Legend
@@ -35,29 +44,40 @@ const GraficoReportType = ({data}) => {
       };
       
          
-      const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+      const labels = content[0].profits.map(item => item.period);
       
-      const data1 = {
-        labels,
-        datasets: [
-          {
-            label: 'Dataset 1',
-            data: [2,3,7,11,20,15,13],
+      function getData(){
+        let dataset = [];
+        let salario = content.reduce((a, c) => (a + c.profits[0].custoFixo), 0);
+        let custoFixoMedio = salario / content.length;
+        dataset.push({
+          type: 'line' as const,
+          label: 'Custo Fixo Médio',
+          data: content[0].profits.map(() => custoFixoMedio),
+          borderColor: 'rgb(255, 99, 132)',
+          borderWidth: 2,
+          fill: false,
+        })
+        content.map(item => {
+          dataset.push({
+            type: 'bar' as const,
+            label: item.consultant,
+            data: item.profits.map(item => item.receitaLiquida),
             borderColor: 'rgb(255, 99, 132)',
-            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-          },
-          {
-            label: 'Dataset 2',
-            data: [12,13,4,15,10,1,9],
-            borderColor: 'rgb(53, 162, 235)',
-            backgroundColor: 'rgba(53, 162, 235, 0.5)',
-          },
-        ],
+            backgroundColor: random_rgba(),
+          })
+        })
+        return dataset;
+      }
+    
+      const data = {
+        labels,
+        datasets: getData(),
       };
 
     return (
         <>
-           <Bar options={options} data={data1} />
+           <Bar options={options} data={data} />
         </>
     );
 };

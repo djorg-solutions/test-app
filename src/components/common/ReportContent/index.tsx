@@ -8,8 +8,8 @@ const ReportContent = ({selected, data}) => {
     return (
         <>
             {selected === 0 && <RelatorioReportType data={data} />}
-            {selected === 1 && <GraficoReportType data={data}/>}
-            {selected === 2 && <PizzaReportType data={data}/>}
+            {selected === 1 && <GraficoReportType content={data}/>}
+            {selected === 2 && <PizzaReportType content={data}/>}
         </>
     );
 };
