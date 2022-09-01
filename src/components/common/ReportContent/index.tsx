@@ -4,12 +4,12 @@ import GraficoReportType from './GraficoReportType';
 import PizzaReportType from './PizzaReportType';
 
 
-const ReportContent = ({selected}) => {
+const ReportContent = ({selected, data}) => {
     return (
         <>
-            {selected === 0 && <RelatorioReportType />}
-            {selected === 1 && <GraficoReportType />}
-            {selected === 2 && <PizzaReportType />}
+            {selected === 0 && <RelatorioReportType data={data} />}
+            {selected === 1 && <GraficoReportType data={data}/>}
+            {selected === 2 && <PizzaReportType data={data}/>}
         </>
     );
 };

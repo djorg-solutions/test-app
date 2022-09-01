@@ -23,12 +23,12 @@ const Home = ({ consultants }: HomePageProps) => {
   const [endDate, setEndDate] = useState<Dayjs>([null, null]);
   const [tabSelected, setTabSelected] = useState(0);
   const [reportTypeSelected, setReportTypeSelected] = useState(-1);
-
   const [consultantsSelected, setConsultantsSelected] = useState<readonly string[]>([]);
+  const [reportData, setReportData] = useState();
 
   const { mutate: send } = useMutation(sendConsultants, {
     onSuccess: (data) => {
-
+      setReportData(data)
     },
     onError: (error) => {
       alert('An error occurred on the server!');
@@ -44,7 +44,7 @@ const Home = ({ consultants }: HomePageProps) => {
   };
 
   const handleReportType = value => {
-    if (consultantsSelected.length > 0 && startDate.$d && endDate.$d) {
+    if (consultantsSelected.length > 0 && startDate.$d && endDate.$d && endDate.$d > startDate.$d) {
       setReportTypeSelected(value);
       send({
         consultants: consultantsSelected,
@@ -108,7 +108,7 @@ const Home = ({ consultants }: HomePageProps) => {
       </Grid>
 
       <Grid item xs={12} mt={4}>
-        <ReportContent selected={reportTypeSelected} />
+        <ReportContent selected={reportTypeSelected} data={reportData}/>
       </Grid>
     </Grid>
   );

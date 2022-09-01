@@ -5,9 +5,9 @@ import { Grid } from '@mui/material';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const PizzaReportType = () => {
+const PizzaReportType = ({data}) => {
 
-    const data = {
+    const data1 = {
         labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
         datasets: [
             {
@@ -37,7 +37,7 @@ const PizzaReportType = () => {
     return (
         <Grid container justifyContent={'center'}>
             <Grid item xs={6}>
-                <Pie data={data} />
+                <Pie data={data1} />
             </Grid>
         </Grid>
 

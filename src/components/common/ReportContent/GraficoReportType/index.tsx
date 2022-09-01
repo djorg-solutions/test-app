@@ -10,7 +10,7 @@ import {
     Legend,
   } from 'chart.js';
 
-const GraficoReportType = () => {
+const GraficoReportType = ({data}) => {
     
     ChartJS.register(
         CategoryScale,
@@ -37,7 +37,7 @@ const GraficoReportType = () => {
          
       const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
       
-      const data = {
+      const data1 = {
         labels,
         datasets: [
           {
@@ -57,7 +57,7 @@ const GraficoReportType = () => {
 
     return (
         <>
-           <Bar options={options} data={data} />
+           <Bar options={options} data={data1} />
         </>
     );
 };
