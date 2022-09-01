@@ -15,6 +15,8 @@ import {Consultant} from 'src/models/Consultant';
 interface TranferListProps{
     label: string;
     list: Consultant[];
+    selected: string[];
+    setSelected: any;
 }
 
 function not(a: readonly string[], b: readonly string[]) {
@@ -29,17 +31,17 @@ function union(a: readonly string[], b: readonly string[]) {
   return [...a, ...not(b, a)];
 }
 
-export default function TransferList({label, list}:TranferListProps) {
+export default function TransferList({label, list, selected, setSelected}:TranferListProps) {
   const [checked, setChecked] = useState<readonly string[]>([]);
   const [left, setLeft] = useState<readonly string[]>([]);
   const [right, setRight] = useState<readonly string[]>([]);
 
   const leftChecked = intersection(checked, left);
-  const rightChecked = intersection(checked, right);
+  const rightChecked = intersection(checked, selected);
 
   useEffect(() => {
     let newList: string[] = [];
-    list.map(item=> newList.push(item.co_usuario));
+    list.map(item=> newList.push(item.noUsuario));
     setLeft(newList);
 }, [list]);
 
@@ -68,14 +70,14 @@ export default function TransferList({label, list}:TranferListProps) {
   };
 
   const handleCheckedRight = () => {
-    setRight(right.concat(leftChecked));
+    setSelected(selected.concat(leftChecked));
     setLeft(not(left, leftChecked));
     setChecked(not(checked, leftChecked));
   };
 
   const handleCheckedLeft = () => {
     setLeft(left.concat(rightChecked));
-    setRight(not(right, rightChecked));
+    setSelected(not(selected, rightChecked));
     setChecked(not(checked, rightChecked));
   };
 
@@ -167,7 +169,7 @@ export default function TransferList({label, list}:TranferListProps) {
           </Button>
         </Grid>
       </Grid>
-      <Grid item>{customList('Seleccionados', right)}</Grid>
+      <Grid item>{customList('Seleccionados', selected)}</Grid>
     </Grid>
   );
 }

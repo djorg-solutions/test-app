@@ -1,3 +1,4 @@
 export interface Consultant {
-    co_usuario: string,
+    coUsuario: string;
+    noUsuario: string;
 }

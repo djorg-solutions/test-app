@@ -8,17 +8,43 @@ import TranferList from 'src/components/common/TranferList';
 import ReportButtons from 'src/components/common/ReportButtons';
 import ReportContent from 'src/components/common/ReportContent';
 import {Consultant} from 'src/models/Consultant';
+import {getConsultants} from 'src/services/consultants.service';
+import {useMutation} from 'react-query';
+import {sendConsultants} from 'src/services/consultants.service';
 
 
-const list: Consultant[] = [{co_usuario: "jorge.pozo"},{co_usuario: "pedro.castillo"}, {co_usuario: "javy.lopez"}];
+interface HomePageProps{
+  consultants: Consultant[];
+}
 
-const Home: NextPage = () => {
+const Home = ({consultants}: HomePageProps) => {
 
-  const [value, setValue] = useState<DateRange<Dayjs>>([null, null]);
+  const [rangeDate, setRangeDate] = useState<DateRange<Dayjs>>([null, null]);
   const [tabSelected, setTabSelected] = useState(0);
-  const [reportTypeSelected, setReportTypeSelected] = useState(0);
+  const [reportTypeSelected, setReportTypeSelected] = useState(-1);
 
-  const handleReportType = value => setReportTypeSelected(value);
+  const [consultantsSelected, setConsultantsSelected] = useState<readonly string[]>([]);
+
+  const { mutate: send } = useMutation(sendConsultants, {
+    onSuccess: (data) => {
+        
+    },
+    onError: (error) => {
+        alert('An error occurred on the server!');
+    }
+});
+
+  const handleReportType = value => {
+    if (consultantsSelected.length > 0 && rangeDate[0]) {
+      setReportTypeSelected(value);
+      send({
+        consultants: consultantsSelected,
+        reportType: value,
+        startDate: new Date(rangeDate[0].$d),
+        endDate: new Date(rangeDate[1].$d)
+      })
+    }
+  } 
 
   return (
     <Grid container>
@@ -33,9 +59,10 @@ const Home: NextPage = () => {
             localeText={{ start: 'Desde', end: 'Hasta' }}
           >
             <DateRangePicker
-              value={value}
+              value={rangeDate}
+              inputFormat={'DD/MM/YYYY'}
               onChange={(newValue) => {
-                setValue(newValue);
+                setRangeDate(newValue);
               }}
               renderInput={(startProps, endProps) => (
                 <>
@@ -51,7 +78,12 @@ const Home: NextPage = () => {
       <Grid xs={12} item mt={3}>
         <Grid container justifyContent={'space-between'}>
           <Grid xs={9} item>
-            <TranferList label={tabSelected === 0 ? 'Consultores' : 'Clientes'} list={list} />
+            <TranferList
+              label={tabSelected === 0 ? 'Consultores' : 'Clientes'}
+              list={consultants}
+              selected={consultantsSelected}
+              setSelected={setConsultantsSelected}
+            />
           </Grid>
           <Grid xs={3} item>
             <ReportButtons selected={reportTypeSelected} handleReport={handleReportType} />
@@ -65,5 +97,12 @@ const Home: NextPage = () => {
     </Grid>
   );
 };
+
+export async function getServerSideProps() {
+
+  let consultants: Consultant[] = await getConsultants();
+
+  return { props: {consultants} }
+}
 
 export default Home;
